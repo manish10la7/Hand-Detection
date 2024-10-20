@@ -5,17 +5,22 @@
 
 def segment(region):
     global hand
+ 
     diff = cv2.absdiff(background.astype(np.uint8), region)
+
+   
     thresholded_region = cv2.threshold(diff, OBJ_THRESHOLD, 255, cv2.THRESH_BINARY)[1]
+
 
     contours, _ = cv2.findContours(thresholded_region.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if len(contours) == 0:
         if hand is not None:
             hand.isInFrame = False
-        return None, None
+        return
+
     else:
         if hand is not None:
             hand.isInFrame = True
-        segmented_region = max(contours, key=cv2.contourArea)
-        return thresholded_region, segmented_region
+        segmented_region = max(contours, key = cv2.contourArea)
+        return (thresholded_region, segmented_region)
